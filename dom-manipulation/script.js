@@ -127,3 +127,38 @@ loadLastViewedQuote();
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
 importInput.addEventListener("change", importFromJsonFile);
+// Export quotes to JSON file
+function exportQuotesToJson() {
+  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Import quotes from JSON file
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        updateCategoryOptions();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid JSON format.");
+      }
+    } catch (err) {
+      alert("Error reading JSON file.");
+    }
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// Event listeners for export/import
+document.getElementById("exportQuotes").addEventListener("click", exportQuotesToJson);
+document.getElementById("importFile").addEventListener("change", importFromJsonFile);
