@@ -1,14 +1,16 @@
+// Load quotes from localStorage or default
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   { text: "Code is like humor. When you have to explain it, it’s bad.", category: "programming" },
   { text: "Design is intelligence made visible.", category: "design" },
   { text: "Simplicity is the soul of efficiency.", category: "productivity" }
 ];
 
+// DOM references
 const quoteDisplay = document.getElementById("quoteDisplay");
 const categorySelector = document.getElementById("categorySelector");
 const categoryFilter = document.getElementById("categoryFilter");
 
-// Save quotes and filter
+// Save quotes and selected filter
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
@@ -19,20 +21,41 @@ function loadFilter() {
   return localStorage.getItem("lastFilter") || "all";
 }
 
-// Populate both dropdowns
+// ✅ Extract unique categories and populate dropdowns using appendChild
 function populateCategories() {
   const categories = [...new Set(quotes.map(q => q.category))];
-  const options = `<option value="all">All Categories</option>` +
-    categories.map(cat => `<option value="${cat}">${cat}</option>`).join("");
 
-  categorySelector.innerHTML = options;
-  categoryFilter.innerHTML = options;
+  categorySelector.innerHTML = "";
+  categoryFilter.innerHTML = "";
 
+  const allOption1 = document.createElement("option");
+  allOption1.value = "all";
+  allOption1.textContent = "All Categories";
+  categorySelector.appendChild(allOption1);
+
+  const allOption2 = document.createElement("option");
+  allOption2.value = "all";
+  allOption2.textContent = "All Categories";
+  categoryFilter.appendChild(allOption2);
+
+  categories.forEach(cat => {
+    const option1 = document.createElement("option");
+    option1.value = cat;
+    option1.textContent = cat;
+    categorySelector.appendChild(option1);
+
+    const option2 = document.createElement("option");
+    option2.value = cat;
+    option2.textContent = cat;
+    categoryFilter.appendChild(option2);
+  });
+
+  // ✅ Restore last selected category
   categoryFilter.value = loadFilter();
   filterQuotes();
 }
 
-// Filter quotes by selected category
+// ✅ Filter quotes and update display
 function filterQuotes() {
   const selected = categoryFilter.value;
   saveFilter(selected);
@@ -50,7 +73,7 @@ function filterQuotes() {
   quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
 }
 
-// Add new quote
+// ✅ Add quote and refresh categories
 document.getElementById("addQuoteBtn").addEventListener("click", () => {
   const text = document.getElementById("newQuoteText").value.trim();
   const category = document.getElementById("newQuoteCategory").value.trim();
@@ -68,7 +91,7 @@ document.getElementById("addQuoteBtn").addEventListener("click", () => {
   alert("Quote added successfully!");
 });
 
-// Show random quote from categorySelector
+// ✅ Show quote from categorySelector
 document.getElementById("newQuote").addEventListener("click", () => {
   const selected = categorySelector.value;
   const filtered = selected === "all"
@@ -84,7 +107,7 @@ document.getElementById("newQuote").addEventListener("click", () => {
   quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
 });
 
-// Export quotes to JSON
+// ✅ Export quotes
 function exportQuotesToJson() {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -96,7 +119,7 @@ function exportQuotesToJson() {
 }
 document.getElementById("exportQuotes").addEventListener("click", exportQuotesToJson);
 
-// Import quotes from JSON
+// ✅ Import quotes
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function(e) {
@@ -118,5 +141,5 @@ function importFromJsonFile(event) {
 }
 document.getElementById("importFile").addEventListener("change", importFromJsonFile);
 
-// Initialize
+// ✅ Initialize
 populateCategories();
