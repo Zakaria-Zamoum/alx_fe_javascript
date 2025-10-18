@@ -1,15 +1,20 @@
+// Load quotes from localStorage or use defaults
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   { text: "Code is like humor. When you have to explain it, it’s bad.", category: "programming" },
   { text: "Design is intelligence made visible.", category: "design" },
   { text: "Simplicity is the soul of efficiency.", category: "productivity" }
 ];
 
+// DOM references
 const quoteDisplay = document.getElementById("quoteDisplay");
 const categorySelector = document.getElementById("categorySelector");
 const categoryFilter = document.getElementById("categoryFilter");
 const notificationArea = document.getElementById("notificationArea");
 
+// Track selected category
 let selectedCategory = localStorage.getItem("selectedCategory") || "all";
+
+// Server URL (mock API)
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 // Save quotes and selected category
@@ -91,7 +96,6 @@ document.getElementById("addQuoteBtn").addEventListener("click", () => {
   document.getElementById("newQuoteCategory").value = "";
   alert("Quote added successfully!");
 
-  // Simulate POST to server
   postQuoteToServer(newQuote);
 });
 
@@ -157,7 +161,7 @@ async function fetchQuotesFromServer() {
   }));
 }
 
-// ✅ Post quote to server (simulated)
+// ✅ Post quote to server
 async function postQuoteToServer(quote) {
   try {
     await fetch(SERVER_URL, {
@@ -181,7 +185,7 @@ async function syncQuotes() {
       quotes.push(...newQuotes);
       saveQuotes();
       populateCategories();
-      showNotification(`${newQuotes.length} new quotes synced from server.`);
+      showNotification("Quotes synced with server!");
     }
   } catch (err) {
     console.error("Sync failed:", err);
