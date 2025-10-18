@@ -1,4 +1,3 @@
-// Load quotes from localStorage or default
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   { text: "Code is like humor. When you have to explain it, it’s bad.", category: "programming" },
   { text: "Design is intelligence made visible.", category: "design" },
@@ -10,18 +9,19 @@ const quoteDisplay = document.getElementById("quoteDisplay");
 const categorySelector = document.getElementById("categorySelector");
 const categoryFilter = document.getElementById("categoryFilter");
 
-// Save quotes and selected filter
+// ✅ Track selected category
+let selectedCategory = localStorage.getItem("selectedCategory") || "all";
+
+// Save quotes and selected category
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
-function saveFilter(category) {
-  localStorage.setItem("lastFilter", category);
-}
-function loadFilter() {
-  return localStorage.getItem("lastFilter") || "all";
+function saveSelectedCategory(category) {
+  selectedCategory = category;
+  localStorage.setItem("selectedCategory", category);
 }
 
-// ✅ Extract unique categories and populate dropdowns using appendChild
+// ✅ Populate dropdowns and restore selected category
 function populateCategories() {
   const categories = [...new Set(quotes.map(q => q.category))];
 
@@ -50,15 +50,16 @@ function populateCategories() {
     categoryFilter.appendChild(option2);
   });
 
-  // ✅ Restore last selected category
-  categoryFilter.value = loadFilter();
+  // ✅ Restore selected category
+  categoryFilter.value = selectedCategory;
+  categorySelector.value = selectedCategory;
   filterQuotes();
 }
 
 // ✅ Filter quotes and update display
 function filterQuotes() {
   const selected = categoryFilter.value;
-  saveFilter(selected);
+  saveSelectedCategory(selected);
 
   const filtered = selected === "all"
     ? quotes
@@ -73,7 +74,7 @@ function filterQuotes() {
   quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
 }
 
-// ✅ Add quote and refresh categories
+// ✅ Add new quote and refresh categories
 document.getElementById("addQuoteBtn").addEventListener("click", () => {
   const text = document.getElementById("newQuoteText").value.trim();
   const category = document.getElementById("newQuoteCategory").value.trim();
@@ -94,6 +95,8 @@ document.getElementById("addQuoteBtn").addEventListener("click", () => {
 // ✅ Show quote from categorySelector
 document.getElementById("newQuote").addEventListener("click", () => {
   const selected = categorySelector.value;
+  saveSelectedCategory(selected);
+
   const filtered = selected === "all"
     ? quotes
     : quotes.filter(q => q.category === selected);
