@@ -7,7 +7,7 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Category Filter Dropdown (NEW) -->
+  <!-- Category Filter Dropdown -->
   <label for="categoryFilter">Filter by category:</label>
   <select id="categoryFilter" onchange="filterQuotes()">
     <option value="all">All Categories</option>
@@ -33,6 +33,9 @@
   <!-- Export and Import Controls -->
   <button id="exportQuotes">Export Quotes</button>
   <input type="file" id="importFile" accept=".json" />
+
+  <!-- Manual Sync Button -->
+  <button onclick="syncWithServer()">Manual Sync</button>
 
   <script src="script.js"></script>
 </body>
