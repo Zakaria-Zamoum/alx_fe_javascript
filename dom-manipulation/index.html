@@ -7,7 +7,14 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
+  <!-- Category Filter Dropdown (NEW) -->
+  <label for="categoryFilter">Filter by category:</label>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+  </select>
+
   <!-- Category Selector -->
+  <label for="categorySelector">Generate from category:</label>
   <select id="categorySelector">
     <option value="all">All Categories</option>
   </select>
